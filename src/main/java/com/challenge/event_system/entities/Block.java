@@ -1,8 +1,6 @@
 package com.challenge.event_system.entities;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -10,7 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,9 +26,10 @@ public class Block {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant ending;
 	
-	@OneToMany(mappedBy = "blocks")
-	private List<Activity> activity = new ArrayList<>();
-	
+	@ManyToOne
+	@JoinColumn(name = "activity_id")
+	private Activity activity;
+
 	public Block () {}
 	
 	public Block(Integer id, Instant begin, Instant ending) {
@@ -62,8 +62,12 @@ public class Block {
 		this.ending = ending;
 	}
 
-	public List<Activity> getActivity() {
+	public Activity getActivity() {
 		return activity;
+	}
+
+	public void setActivity(Activity activity) {
+		this.activity = activity;
 	}
 
 	@Override

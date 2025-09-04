@@ -1,15 +1,15 @@
 package com.challenge.event_system.entities;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -18,35 +18,34 @@ import jakarta.persistence.Table;
 @Table(name = "tb_activity")
 public class Activity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id 
 	private Integer id;
+
 	private String name;
 
 	@Column(columnDefinition = "TEXT")
 	private String description;
 	private Double price;
-	
-	@OneToMany(mappedBy = "activitys")
-	private List<Category> category = new ArrayList<>();
-	
-	@ManyToOne
-	@JoinColumn(name = "block_id")
-	private Block blocks;
-	
-	@ManyToOne
-	@JoinColumn(name = "participants_id")
-	private Participant participants;
-	
-	public Activity() {}
 
-	public Activity(Integer id, String name, String description, Double price, Block blocks, Participant participants) {
+	@ManyToOne
+	@JoinColumn(name = "category_id")
+	private Category category;
+	
+	@OneToMany(mappedBy = "activity")
+	private Set<Block> block = new HashSet<>();
+
+	@ManyToMany
+	@JoinTable(name = "tb_activity_participant", joinColumns = @JoinColumn(name = "activity_id"), inverseJoinColumns = @JoinColumn(name = "participant_id"))
+	private Set<Participant> participants = new HashSet<>();
+
+	public Activity() {
+	}
+
+	public Activity(Integer id, String name, String description, Double price) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.price = price;
-		this.blocks = blocks;
-		this.participants = participants;
 	}
 
 	public Integer getId() {
@@ -80,25 +79,21 @@ public class Activity {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	
-	public Participant getParticipants() {
-		return participants;
-	}
 
-	public void setParticipants(Participant participants) {
-		this.participants = participants;
-	}
-
-	public Block getBlock() {
-		return blocks;
-	}
-
-	public void setBlock(Block blocks) {
-		this.blocks = blocks;
-	}
-
-	public List<Category> getCategory() {
+	public Category getCategory() {
 		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+	
+	public Set<Block> getBlock() {
+		return block;
+	}
+
+	public Set<Participant> getParticipants() {
+		return participants;
 	}
 
 	@Override
@@ -117,6 +112,5 @@ public class Activity {
 		Activity other = (Activity) obj;
 		return Objects.equals(id, other.id);
 	}
-	
 
 }

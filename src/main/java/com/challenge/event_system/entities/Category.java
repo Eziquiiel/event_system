@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,16 +25,14 @@ public class Category {
 	@Column(columnDefinition = "TEXT")
 	private String description;
 	
-	@ManyToOne
-	@JoinColumn(name = "activitys_id")
-	private Activity activitys;
+	@OneToMany(mappedBy = "category")
+	private List<Activity> activitys = new ArrayList<>();
 	
 	public Category() {}
 	
 	public Category(Integer id, String description, Activity activitys) {
 		this.id = id;
 		this.description = description;
-		this.activitys = activitys;
 	}
 
 
@@ -53,13 +52,9 @@ public class Category {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	public Activity getActivitys() {
-		return activitys;
-	}
 
-	public void setActivitys(Activity activitys) {
-		this.activitys = activitys;
+	public List<Activity> getActivitys() {
+		return activitys;
 	}
 
 	@Override
